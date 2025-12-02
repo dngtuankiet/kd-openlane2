@@ -1,8 +1,17 @@
 <p align="center">
-    <a href="https://github.com/The-OpenROAD-Project/OpenLane">
-        <img src="./docs/_static/support_banner.svg" style="width: 70%;overflow: visible" alt="Banner explaining that OpenLane 2.0 is not the primary supported option for hardening Caravel User Project-based designs targeting chipIgnite"/>
+    <a href="https://github.com/librelane/librelane">
+        <img src="./docs/_static/openlane2_banner.svg" style="width: 80%;overflow: visible" alt="Banner explaining that development has moved over to github.com/librelane/librelane"/>
     </a>
 </p>
+
+If you're looking to tapeout an OpenLane 2/LibreLane-based design with
+ChipFoundry, an appropriate version of OpenLane 2/LibreLane will be
+automatically pulled by  your target template:
+
+* Caravel User Project: https://github.com/chipfoundry/caravel_user_project
+* OpenFrame User Project: https://github.com/chipfoundry/openframe_user_project
+
+---
 
 <h1 align="center">OpenLane</h1>
 <p align="center">
@@ -11,11 +20,6 @@
     <a href="https://github.com/psf/black"><img src="https://img.shields.io/badge/code%20style-black-000000.svg" alt="Code Style: black"/></a>
     <a href="https://mypy-lang.org/"><img src="https://www.mypy-lang.org/static/mypy_badge.svg" alt="Checked with mypy"/></a>
     <a href="https://nixos.org/"><img src="https://img.shields.io/static/v1?logo=nixos&logoColor=white&label=&message=Built%20with%20Nix&color=41439a" alt="Built with Nix"/></a>
-</p>
-<p align="center">
-    <a href="https://colab.research.google.com/github/efabless/openlane2/blob/main/notebook.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab"></a>
-    <a href="https://openlane2.readthedocs.io/"><img src="https://readthedocs.org/projects/openlane2/badge/?version=latest" alt="Documentation Build Status Badge"/></a>
-    <a href="https://open-source-silicon.dev"><img src="https://img.shields.io/badge/Community-Open%20Source%20Silicon%20Slack-ff69b4?logo=slack" alt="Invite to the Open Source Silicon Slack"/></a>
 </p>
 
 OpenLane is an ASIC infrastructure library based on several components including
@@ -27,58 +31,7 @@ the way down to GDSII.
 
 You can find the documentation
 [here](https://openlane2.readthedocs.io/en/latest/getting_started/) to get
-started. You can discuss OpenLane 2 in the
-[#openlane-2](https://open-source-silicon.slack.com/archives/C05M85Q5GCF)
-channel of the
-[Efabless Open Source Silicon Slack](https://invite.skywater.tools).
-
-```mermaid
-timeline
-  title The OpenLane Infrastructure
-  RTL to Netlist
-    : Linting / Verilator
-    : Power Distribution Network Hierarchy / Yosys
-    : Synthesis / Yosys
-    : Synthesis / Design Compiler (with proprietary plugin)
-    : Multi-corner Netlist STA / OpenSTA
-  Floorplanning
-    : Floorplan Initialization / OpenROAD
-    : Manual Macro Placement / OpenDB
-    : Tap/Endcap Insertion / OpenROAD
-    : PDN Generation / OpenROAD
-  Placement
-    : Pin Placement (from config file) / OpenROAD, OpenDB
-    : Pin Placement (Random/Matching/Annealing) / OpenROAD
-    : Pin Placement (from template DEF) / OpenDB
-    : Global Placement / OpenROAD
-    : Resizer Design Repair (Post-GPL) / OpenROAD
-    : Detailed Placement / OpenROAD
-  Clock Tree Synthesis
-    : Clock-Tree Synthesis / OpenROAD
-    : Resizer Timing Repair (Post-CTS) / OpenROAD
-  Routing
-    : Global Routing / OpenROAD
-    : Resizer Design Repair (Post-GRT) / OpenROAD
-    : Diode Insertion on Ports / OpenDB
-    : Heuristic Diode Insertion / OpenDB
-    : Antenna Repair / OpenROAD
-    : Resizer Timing Repair (Post-GRT) / OpenROAD
-    : Detailed Routing / OpenROAD
-    : Row Filling / OpenROAD
-  Signoff (Timing)
-    : Parasitics Extraction / OpenROAD
-    : Multi-corner Static Timing Analysis / OpenSTA
-    : SI-Enabled Multi-corner Static Timing Analysis / PrimeTime (with proprietary plugin)
-  Signoff (Physical)
-    : GDSII Stream-Out / Magic
-    : GDSII Stream-Out / KLayout
-    : Magic vs. KLayout Stream XOR / KLayout
-    : Design Rule Checks / Magic
-    : Design Rule Checks / KLayout
-    : Spice Extraction / Magic
-    : Layout vs. Schematic / Netgen
-    : Equivalence Check (Alpha) / Yosys EQY
-```
+started.
 
 ## Try it out
 

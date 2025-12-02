@@ -23,7 +23,7 @@ jobs:
       design_matrix: ${{ steps.set-matrix.outputs.design_matrix }}
       opdks_rev: ${{ steps.set-rev.outputs.opdks_rev }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Python Dependencies
         run: |
           pip3 install poetry poetry-plugin-export
@@ -66,7 +66,7 @@ jobs:
         run: |
           python3 -m pip install git+https://github.com/efabless/IPM
       - name: Checkout submodules
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           submodules: true
   lint:
@@ -74,7 +74,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Check out repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set Up Python
         uses: actions/setup-python@v4
         with:
@@ -94,7 +94,7 @@ jobs:
     name: Build and Unit Test (Python ${{ matrix.python-version }})
     steps:
       - name: Check out repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set Up Python
         uses: actions/setup-python@v4
         with:
@@ -111,7 +111,7 @@ jobs:
     runs-on: ubuntu-22.04
     name: Build (Nix/x86_64-linux)
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Initialize Step Unit Test Submodule
         run: |
           git submodule update --init test/steps/all
@@ -136,7 +136,7 @@ jobs:
     name: Build (Nix/aarch64-linux)
     steps:
       - uses: docker/setup-qemu-action@v1
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Initialize Step Unit Test Submodule
         run: |
           git submodule update --init test/steps/all
@@ -160,15 +160,15 @@ jobs:
       matrix:
         system:
           [
-            { gha: macos-13, nix: "x86_64-darwin" },
-            { gha: macos-14, nix: "aarch64-darwin" },
+            { gha: macos-15-intel, nix: "x86_64-darwin" },
+            { gha: macos-15, nix: "aarch64-darwin" },
           ]
       fail-fast: false
     needs: [lint, prepare-test-matrices]
     runs-on: ${{ matrix.system.gha }}
     name: Build (Nix/${{ matrix.system.nix }})
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Initialize Step Unit Test Submodule
         run: |
           git submodule update --init test/steps/all
@@ -215,7 +215,7 @@ jobs:
           remove-docker-images: "true"
           root-reserve-mb: 20480
       - name: Check out repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - uses: docker/setup-qemu-action@v1
       - name: Set Nix System
@@ -290,7 +290,7 @@ jobs:
           remove-codeql: "true"
           remove-docker-images: "true"
           root-reserve-mb: 20480
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: recursive
       - name: Check if Git
@@ -397,7 +397,7 @@ jobs:
     if: ${{ always() }}
     steps:
       - name: Check out repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Setup
@@ -445,7 +445,7 @@ jobs:
     name: Publish (If Applicable)
     steps:
       - name: Check out repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Setup Environment
