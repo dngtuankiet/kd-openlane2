@@ -90,8 +90,8 @@ MACROS:
 #
 # Core: 6500x6500 um  Die: 6600x6600 um (50 um border each side)
 FP_SIZING: absolute
-DIE_AREA:  "0 0 6600 6600"
-CORE_AREA: "50 50 6550 6550"
+DIE_AREA:  [0, 0, 6600, 6600]
+CORE_AREA: [50, 50, 6550, 6550]
 
 # FP_CORE_UTIL=45 provides ~18.5M um2 for cells; synthesis needs 17.57M um2.
 FP_CORE_UTIL: 45
@@ -119,7 +119,7 @@ FP_PIN_ORDER_CFG: dir::pin_order.cfg
 # ----------------------------------------------------------------
 # Placement
 # ----------------------------------------------------------------
-PL_TARGET_DENSITY: 0.45
+PL_TARGET_DENSITY_PCT: 45
 
 # ----------------------------------------------------------------
 # Routing
