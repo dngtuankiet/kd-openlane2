@@ -40,9 +40,7 @@ VERILOG_FILES:
   - dir::src/PEA.v
   - dir::src/Dual_Port_BRAM_sram.v
 
-# Keep hierarchy through synthesis so SRAM blackbox instances
-# retain their hierarchical names for placement matching.
-SYNTH_HIERARCHY_MODE: deferred_flatten
+SYNTH_HIERARCHY_MODE: flatten
 
 # ----------------------------------------------------------------
 # Hard SRAM macros
@@ -58,16 +56,16 @@ SYNTH_HIERARCHY_MODE: deferred_flatten
 MACROS:
   sky130_sram_2kbyte_1rw1r_32x512_8:
     instances:
-      "u_instruction_memory/u_instruction_mem/gen_sram/gen_depth_bank[0]/gen_width_slice[0]/u_sram":
+      "u_instruction_memory.u_instruction_mem.gen_sram.gen_depth_bank[0].gen_width_slice[0].u_sram":
         location: [10.0, 10.0]
         orientation: N
-      "u_instruction_memory/u_instruction_mem/gen_sram/gen_depth_bank[0]/gen_width_slice[1]/u_sram":
+      "u_instruction_memory.u_instruction_mem.gen_sram.gen_depth_bank[0].gen_width_slice[1].u_sram":
         location: [703.1, 10.0]
         orientation: N
-      "u_instruction_memory/u_instruction_mem/gen_sram/gen_depth_bank[1]/gen_width_slice[0]/u_sram":
+      "u_instruction_memory.u_instruction_mem.gen_sram.gen_depth_bank[1].gen_width_slice[0].u_sram":
         location: [10.0, 436.54]
         orientation: N
-      "u_instruction_memory/u_instruction_mem/gen_sram/gen_depth_bank[1]/gen_width_slice[1]/u_sram":
+      "u_instruction_memory.u_instruction_mem.gen_sram.gen_depth_bank[1].gen_width_slice[1].u_sram":
         location: [703.1, 436.54]
         orientation: N
     gds:
