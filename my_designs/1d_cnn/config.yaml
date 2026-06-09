@@ -1,0 +1,131 @@
+# OpenLane 2 config for CNN_1D_Core (1-D CNN accelerator)
+#
+# SRAM strategy
+# -------------
+# The Instruction_Memory uses Dual_Port_BRAM_sram.v which maps
+# AWIDTH=10 / DWIDTH=64 to 4 x sky130_sram_2kbyte_1rw1r_32x512_8:
+#   - 2 depth banks  (512 x 2 = 1024 entries)
+#   - 2 width slices (32 x 2 = 64-bit data)
+# All other Dual_Port_BRAM instances (DWIDTH=16) fall back to RTL
+# register arrays, which Yosys synthesises as flip-flop memories.
+#
+# Note: Dual_Port_BRAM.v (pure RTL) is intentionally excluded from
+# VERILOG_FILES; Dual_Port_BRAM_sram.v defines the same module name
+# and contains both the SRAM and RTL-fallback implementations.
+
+# ----------------------------------------------------------------
+# Core identifiers
+# ----------------------------------------------------------------
+DESIGN_NAME: CNN_1D_Core
+CLOCK_PORT: CLK
+CLOCK_PERIOD: 20.0
+
+PNR_SDC_FILE:     dir::sdc/impl.sdc
+SIGNOFF_SDC_FILE: dir::sdc/signoff.sdc
+
+# ----------------------------------------------------------------
+# RTL sources (explicit list to exclude Dual_Port_BRAM.v)
+# ----------------------------------------------------------------
+VERILOG_FILES:
+  - dir::src/CNN_1D_Core.v
+  - dir::src/Global_Arbiter.v
+  - dir::src/Controller.v
+  - dir::src/Instruction_Memory.v
+  - dir::src/Weight_Bank_Memory.v
+  - dir::src/Bias_Bank_Memory.v
+  - dir::src/Ping_Pong_FMAP_Bank_Memory.v
+  - dir::src/IFM_Arbiter.v
+  - dir::src/Line_Buffer.v
+  - dir::src/PE.v
+  - dir::src/PEA.v
+  - dir::src/Dual_Port_BRAM_sram.v
+
+# Keep hierarchy through synthesis so SRAM blackbox instances
+# retain their hierarchical names for placement matching.
+SYNTH_HIERARCHY_MODE: deferred_flatten
+
+# ----------------------------------------------------------------
+# Hard SRAM macros
+# ----------------------------------------------------------------
+# Placement: 2x2 grid in the lower-left corner of the core.
+#   Macro footprint: 683.1 um (W) x 416.54 um (H)
+#   Col 0 x: 10 um        Col 1 x: 703.1 um  (10 + 683.1 + 10)
+#   Row 0 y: 10 um        Row 1 y: 436.54 um (10 + 416.54 + 10)
+#
+# If instance paths do not match the synthesised netlist, OpenROAD
+# auto-places the macros (flow still succeeds). Verify the paths
+# by inspecting the post-synthesis netlist on the first run.
+MACROS:
+  sky130_sram_2kbyte_1rw1r_32x512_8:
+    instances:
+      "u_instruction_memory/u_instruction_mem/gen_sram/gen_depth_bank[0]/gen_width_slice[0]/u_sram":
+        location: [10.0, 10.0]
+        orientation: N
+      "u_instruction_memory/u_instruction_mem/gen_sram/gen_depth_bank[0]/gen_width_slice[1]/u_sram":
+        location: [703.1, 10.0]
+        orientation: N
+      "u_instruction_memory/u_instruction_mem/gen_sram/gen_depth_bank[1]/gen_width_slice[0]/u_sram":
+        location: [10.0, 436.54]
+        orientation: N
+      "u_instruction_memory/u_instruction_mem/gen_sram/gen_depth_bank[1]/gen_width_slice[1]/u_sram":
+        location: [703.1, 436.54]
+        orientation: N
+    gds:
+      - pdk_dir::libs.ref/sky130_sram_macros/gds/sky130_sram_2kbyte_1rw1r_32x512_8.gds
+    lef:
+      - pdk_dir::libs.ref/sky130_sram_macros/lef/sky130_sram_2kbyte_1rw1r_32x512_8.lef
+    nl:
+      - pdk_dir::libs.ref/sky130_sram_macros/verilog/sky130_sram_2kbyte_1rw1r_32x512_8.v
+    lib:
+      "*":
+        - pdk_dir::libs.ref/sky130_sram_macros/lib/sky130_sram_2kbyte_1rw1r_32x512_8_TT_1p8V_25C.lib
+
+# ----------------------------------------------------------------
+# Floorplan — absolute to lock in macro placement
+# ----------------------------------------------------------------
+FP_SIZING: absolute
+DIE_AREA:  "0 0 3100 3100"
+CORE_AREA: "10 10 3090 3090"
+
+# Conservative cell utilisation; the design has ~200 K flip-flops
+# from the synthesised 16-bit memory banks (12 x 1024 x 16 bits).
+FP_CORE_UTIL: 35
+
+# Halo prevents PDN straps from clashing with macro power rings
+FP_PDN_HORIZONTAL_HALO: 10
+FP_PDN_VERTICAL_HALO:   10
+
+# ----------------------------------------------------------------
+# PDN
+# ----------------------------------------------------------------
+FP_PDN_VOFFSET:  5
+FP_PDN_HOFFSET:  5
+FP_PDN_VWIDTH:   2
+FP_PDN_HWIDTH:   2
+FP_PDN_VPITCH:   30
+FP_PDN_HPITCH:   30
+FP_PDN_SKIPTRIM: true
+
+# ----------------------------------------------------------------
+# Pin placement
+# ----------------------------------------------------------------
+FP_PIN_ORDER_CFG: dir::pin_order.cfg
+
+# ----------------------------------------------------------------
+# Placement
+# ----------------------------------------------------------------
+PL_TARGET_DENSITY: 0.35
+
+# ----------------------------------------------------------------
+# Routing
+# ----------------------------------------------------------------
+GRT_OVERFLOW_ITERS: 50
+
+# ----------------------------------------------------------------
+# PDK-conditional overrides
+# ----------------------------------------------------------------
+pdk::sky130*:
+  CLOCK_PERIOD: 20.0
+  FP_CORE_UTIL: 35
+  scl::sky130_fd_sc_hs:
+    CLOCK_PERIOD: 15.0
